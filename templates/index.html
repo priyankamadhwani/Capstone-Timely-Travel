@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timely Travels</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #1565c0;
+            padding: 10px;
+        }
+        nav button {
+            background-color: #1976d2;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        #content {
+            padding: 20px;
+        }
+
+        #searchInput {
+            width: 80%;
+            padding: 8px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <button onclick="navigate('homepage')">Homepage</button>
+        <button onclick="navigate('graphs')">Graphs</button>
+        <button onclick="navigate('timeseries')">TimeSeriesForecasting</button>
+    </nav>
+
+    <div id="content">
+        <!-- Content will be dynamically loaded here -->
+    </div>
+
+    <script>
+        function navigate(page) {
+            const contentDiv = document.getElementById('content');
+            
+            if (page === 'homepage') {
+                contentDiv.innerHTML = `
+                    <h1>Timely Travels: Predicting Flight Status using Machine Learning</h1>
+                    <p>Around one-third of total flights are delayed. The reasons may vary from Weather Delay to Security reasons. I thought it would be fun to explore the domestic commercial flights of US. I have created a model with around 75% accuracy. The model is trained on the data of Southwest Airlines that covers 104 airports of 336 in the US.</p>
+                    <p>To see if your flight will be delayed or not, please input the following: </p>
+                    <p>Eg:  2022,8,17,15,84,808,1042 OR 2023,1,16,45,64,1,117</p>
+                    <form id="searchForm" onsubmit="search(); return false;">
+                            <input type="text" id="searchInput" placeholder="Enter Year, Month, Day, Origin City Code, Destination City Code, Departure Time, Arrival Time">
+                    <button type="submit">Search</button>
+                    </form>
+                    <p id="searchResult"></p>
+                `;
+           } else if (page === 'graphs') {
+                contentDiv.innerHTML = `
+                    <h1>Graphs</h1>
+                    <p>Found these interesting facts on the whole dataset of over 7 million rows.</p>
+                    <img src="static/assets/graph1.png" alt="Flights Per Day">
+                    <img src="static/assets/graph2.png" alt="Flights per Airline">
+                    <img src="static/assets/graph3.png" alt="Distribution of FlightStatus">
+                    <img src="static/assets/graph4.png" alt="Flight Delay Reasons">
+                    <img src="static/assets/graph5.png" alt="Flight Count per Airline And Status">
+                    <img src="static/assets/graph6.png" alt="Delayed Flights over Time">
+                `;
+            } else if (page === 'timeseries') {
+                contentDiv.innerHTML = `
+                    <h1>TimeSeries</h1>
+                    <p>Time Series Forecasting for the next 30 days.</p>
+                    <p>First checked through adf and kpss tests whether the data has stationarity and trends. </p>
+                    <p>Performed Seasonal Decomposition to find the seasonality. Then split the data into training and testing data sets. Through auto arima found the best model and then used it to forecast the next 30 days.</p>
+                    <p>    </p>
+                    <h3>Actual Test Data v Predictions of the Test Data: </h3>
+                    <img src="static/assets/timeseries2.png" alt="TimeSeries 2"> 
+                    <p>    </p>
+                    <h3>Predictions of the number of flights for the next 30 days: </h3>
+                    <img src="static/assets/timeseries1.png" alt="TimeSeries 1">
+                `;
+            }
+                
+                
+        }
+
+        function search() {
+            const searchInput = document.getElementById('searchInput').value;
+
+            fetch(`/run_pred/${searchInput}`)
+                .then(response => response.text())
+                .then(result => {
+                    const searchResult = document.getElementById('searchResult');
+                    searchResult.textContent = result;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Initial page load
+        navigate('homepage');
+    </script>
+</body>
+</html>

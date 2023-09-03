@@ -1,2 +1,2 @@
-# Capstone-Timely-Travel
-Prdicting flight status using machine learning
+# Timely-Travels
+ Predicting Flight Status using Machine Learning
